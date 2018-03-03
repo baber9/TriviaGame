@@ -1,6 +1,9 @@
 // This answer bank came from https://github.com/DavidMoritz/trivia_bible
 // This quiz is for a class only and a live version will not be available.
 
+
+
+
 var questionsAnswersBank = [
     {		
         id: 1,		
@@ -1504,3 +1507,112 @@ var questionsAnswersBank = [
         ]
     }
 ]
+
+// This function 
+function getRandomQuestion() {
+    var randomIndex = Math.floor(Math.random() * questionsAnswersBank.length);
+    displayQuestion(questionsAnswersBank[randomIndex]);
+}
+
+// This function prints the question to screen
+function displayQuestion (question) {
+    // Display time
+    $("#time").html('Time Remaining:&nbsp; <span id="timer">&nbsp;</span> second(s)')
+
+        // start TIMER, if not answered in time, null answer
+    startTimer(7, function() {
+        checkAnswer(null, question);
+    });
+
+    console.log(question.title);  // Console Log Question
+    $("#question").html(question.title);
+
+    question.choices.push(question.answer);
+
+    for (i = 0; question.choices.length > 0; i++) {
+        // Clear current answer#
+        $("#answer-" +  i).html("");
+        var randomIndex = Math.floor(Math.random() * (question.choices.length));
+        console.log(question.choices[randomIndex]);  // Console Log Answers
+        $("#answer-" + i).append(question.choices[randomIndex]);
+        question.choices.splice(randomIndex, 1);
+    }
+    // Remove question from array, so that it isn't repeated
+    questionsAnswersBank.splice(questionsAnswersBank.indexOf(question), 1);
+    $(".answer-block").children("div").on("click", function () {
+        var userAnswer = $(this).text();
+        // FUNCTION FOR STOP TIMER
+        checkAnswer(userAnswer, question);
+    }); 
+    
+}
+
+function startTimer(time, callback) {
+    var intervalID;
+
+    // if answer is clicked, stop timer
+    $(".answer-block").children("div").on("click", function () {
+        clearInterval(intervalID)});
+    
+    var intervalID = setInterval(decrement, 1000);
+    
+    function decrement() {
+        
+        time--;
+        $("#timer").html(time);
+        
+        if (time === 0) {
+            clearInterval(intervalID);
+            // callback is used to in displayQuestion to answer ""
+            callback();
+        }
+    }
+}
+
+
+
+// Used to clear all divs between question and answer screens
+function clearDivs () {
+    $("#time").empty();
+    $("#question").empty();
+    for (i = 0; i < 4; i++) {
+        $("#answer-" + i).empty();
+    }
+}
+
+function checkAnswer (userAnswer, bankQuestion) {
+    var result;
+    if (userAnswer === bankQuestion.answer) {
+        console.log(`"${userAnswer}" was correct!`)
+        result = "Right!";
+        // Increment count for success
+    } else if (userAnswer === null) {
+        result = "Out of Time!";
+    } else {
+        console.log(`"${userAnswer}" was incorrect!`);
+        console.log(`The correct answer was "${bankQuestion.answer}".`)
+        result = "Sorry!";
+    }
+    displayAnswer(result, userAnswer, bankQuestion.answer);
+}
+
+function displayAnswer(result, userAnswer, actualAnswer) {
+    clearDivs();
+    $("#question").html(result);
+    if (result === "Right!") {
+        $("#answer-0").html(`"${userAnswer}" is correct!`);
+    } else if (result === "Sorry!") {
+        $("#answer-0").html(`"${userAnswer}" is incorrect!`);
+        $("#answer-1").html(`The correct answer is "${actualAnswer}".`);
+    } else {
+        $("#answer-0").html(`"${actualAnswer}" is the correct answer.`);
+        console.log(actualAnswer);
+    }
+    // FIGURE OUT HOW TO CONTINUE
+}
+
+
+// for (j = 0; j < 2; j++) {
+    getRandomQuestion();
+// }
+
