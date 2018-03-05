@@ -1,0 +1,37 @@
+body, html {
+    height: 100%;
+}
+
+.bg { 
+    /* The image used */
+    background-image: url("../images/background.jpg");
+
+    /* Full height */
+    height: 100%; 
+
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.gameArea {
+    background-image: url("../images/parchment.jpg");
+    width: 80%;
+    margin: 20% auto;
+    height: 60%
+}
+
+h1 {
+    font-family: 'Sonsie One', cursive;
+    font-size: 6vmax;
+}
+
+#time, #question, .answer-block {   
+    font-family: 'Mina', sans-serif;
+    font-size: 3vmax;
+}
+
+.col-xs-12 {
+    text-align: center;
+}
