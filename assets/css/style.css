@@ -17,9 +17,13 @@ body, html {
 
 .gameArea {
     background-image: url("../images/parchment.jpg");
-    width: 80%;
-    margin: 20% auto;
-    height: 60%
+    border-radius: 1em;
+    padding: 1em;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
 }
 
 h1 {
@@ -34,4 +38,8 @@ h1 {
 
 .col-xs-12 {
     text-align: center;
+}
+
+.btn {
+    margin: 20px auto;
 }
