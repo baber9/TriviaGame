@@ -1,3 +1,5 @@
+/* Background Styles */
+
 body, html {
     height: 100%;
 }
@@ -23,17 +25,30 @@ body, html {
     top: 50%;
     left: 50%;
     margin-right: -50%;
-    transform: translate(-50%, -50%)
+    transform: translate(-50%, -50%);
+    background-repeat: no-repeat;
+    background-size: cover;
 }
+
+/* Game Area Styles */
 
 h1 {
     font-family: 'Sonsie One', cursive;
-    font-size: 6vmax;
+    font-size: 7vmax;
 }
 
-#time, #question, .answer-block {   
+#time {   
     font-family: 'Mina', sans-serif;
+    font-size: 4vmax;
+}
+
+#question {
     font-size: 3vmax;
+}
+
+.answer-block {
+    font-size: 2vmax;
+    font-weight: bold;
 }
 
 .col-xs-12 {

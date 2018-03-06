@@ -1,4 +1,5 @@
 var BibleTrivia = {
+    // Link to AnswersBank
     questionsAnswersBank: globalAnswerBank,
     
     questionCount: 0,
@@ -9,29 +10,32 @@ var BibleTrivia = {
     
     correctCount: 0,
 
+    bibleVerse: "",
+
+    // METHOD to get random number - calls displayQuestion
     getRandomQuestion: function() {
         this.clearDivs();
         var randomIndex = Math.floor(Math.random() * this.questionsAnswersBank.length);
-        console.log(randomIndex);
         this.displayQuestion(this.questionsAnswersBank[randomIndex]);
     },
-
+    // METHOD to display question
     displayQuestion: function(question) {
         // Increment Question Count
         this.questionCount++;
-        console.log("QuestionCount", this.questionCount);
         // Display time
-        $("#time").html('Time Remaining:&nbsp; <span id="timer">&nbsp;</span> second(s)')
+        $("#time").html('Time Remaining:&nbsp; <span id="timer">7</span> second(s)')
 
-        // start TIMER, if not answered in time, null answer
+        // start TIMER, if not answered in time, null answer in callback
         this.startTimer(7, function() {
             BibleTrivia.checkAnswer(null, question);
         });
 
         $("#question").html(question.title);
 
+        // Adds answer from object to answers array
         question.choices.push(question.answer);
 
+        // Displays all answers
         for (i = 0; question.choices.length > 0; i++) {
             // Clear current answer#
             $("#answer-" +  i).html("");
@@ -39,16 +43,19 @@ var BibleTrivia = {
             $("#answer-" + i).append(question.choices[randomIndex]);
             question.choices.splice(randomIndex, 1);
         }
+        
         // Remove question from array, so that it isn't repeated
         this.questionsAnswersBank.splice(this.questionsAnswersBank.indexOf(question), 1);
         $(".answer-block").children("div").on("click", function () {
             var userAnswer;
             userAnswer = $(this).text();
-            console.log(userAnswer);
             BibleTrivia.checkAnswer(userAnswer, question);
         }); 
+        
+        // This calls ajax (API) early, so that vars will populate before answer page
+        this.getBibleVerse(question.reference);
     },
-
+    // METHOD starts timer (accepts callback)
     startTimer: function (time, callback) {
         var intervalID;
     
@@ -59,19 +66,17 @@ var BibleTrivia = {
         var intervalID = setInterval(decrement, 1000);
         
         function decrement() {
-            
             time--;
             $("#timer").html(time);
-            
             if (time === 0) {
                 clearInterval(intervalID);
-                // callback is used to in displayQuestion to answer ""
+                // callback is used to in displayQuestion to null
                 callback();
             }
         }
     },
 
-    // Used to clear all divs between question and answer screens
+    // METHOD used to clear all divs between question and answer screens
     clearDivs: function () {
         $("#time").empty();
         $("#question").empty();
@@ -81,45 +86,46 @@ var BibleTrivia = {
         }
     },
 
+    // METHOD to check answer, calls displayAnswer
     checkAnswer: function (userAnswer, bankQuestion) {
-        console.log(this.questionsAnswersBank.length)
         var result;
         if (userAnswer === bankQuestion.answer) {
             result = "Right!";
             this.correctCount++;
-            console.log("Correct Answers", this.correctCount);
         } else if (userAnswer === null) {
             result = "Out of Time!";
             this.unansweredCount++;
-            console.log("Unanswered", this.unansweredCount);
         } else {
             result = "Sorry!";
             this.incorrectCount++;
-            console.log("Incorrect Answers", this.incorrectCount);
         }
         
         this.displayAnswer(result, userAnswer, bankQuestion);
     },
 
+    // METHOD to display the answer (after response or timeout)
     displayAnswer: function (result, userAnswer, bankQuestion) {
         this.clearDivs();
-    
+        
+        // turn off clicking
         $(".answer-block").children("div").off("click") 
         
-    
+        // displays right, sorry, or out of time
         $("#question").html(result);
+
+        // displays correct answer
         if (result === "Right!") {
             $("#answer-0").html(`"${userAnswer}" is correct!`);
         } else if (result === "Sorry!") {
-            $("#answer-0").html(`"${userAnswer}" is incorrect!`);
-            $("#answer-1").html(`The correct answer is "${bankQuestion.answer}".`);
+            // $("#answer-0").html(`"${userAnswer}" is incorrect!`);
+            $("#answer-0").html(`The correct answer is "${bankQuestion.answer}".`);
         } else {
             $("#answer-0").html(`"${bankQuestion.answer}" is the correct answer.`);
         }
-        this.getBibleVerse(bankQuestion.reference);
         
-        if (this.questionCount < 2) {
-            // CLICK BUTTON TO GO TO NEXT QUESTION
+        // using questionCount to set length of game (10 = 10 total questions)
+        if (this.questionCount < 10) {
+            // Next Question Button
             $("#next-question").attr("value", "Next Question").show().on("click", function() {
                 // MUST USE UNBIND or it calls getRandomQuestion multiple times!
                 $("#next-question").unbind().hide();
@@ -127,17 +133,35 @@ var BibleTrivia = {
             });
         } else {
             $("#next-question").hide();
+            // Display animated gif instead of button ("Calculating Score")
             var timerImg = $("<img>").attr("src", "./assets/images/calculating.gif");
+            $("#answer-3").text("Just a moment while we calculate your score...");
             $("#answer-2").append(timerImg);
             setTimeout(this.endGame, 5000);
         }
-    
+        
+        // Everything below is from API call
+            // this is the verse (ex, job 2:1)
+        var verse = bankQuestion.reference.substring(1, bankQuestion.reference.length - 1);
+        var readMoreLink = "https://biblia.com/books/nasb95/" + verse.replace(/\s/g, ' ');
+        var linkDiv = $("<a></a>").text("Read More").attr("href", readMoreLink).attr("target", "new");
+        
+        // Only include "Read More" link if api received a response
+        if (bibleVerse) {
+            $("#answer-1").html(`${bibleVerse}`).append(linkDiv);
+        } else {
+            $("#answer-1").html(`${bibleVerse}`);
+        }
     
     },
 
-    // FUNCTION uses biblia api to 'get' referenced bible verse and attaches a "Read More" anchor
+    // METHOD uses biblia api to 'get' referenced bible verse and attaches a "Read More" anchor
     getBibleVerse: function (verse) {
+        
+        // remove parenths from verse
         verse = verse.substring(1, verse.length - 1);
+
+        // setup query string
         var queryUrl = "http://api.biblia.com/v1/bible/content/KJV1900.txt.txt?passage=" + verse + "&callback=myCallbackFunction&key=";
         var apik = "051aecee5b057900c8b82933d40bf972"
 
@@ -145,20 +169,18 @@ var BibleTrivia = {
             url: queryUrl + apik, 
             method: 'GET',
             success: (function(response) {
-                // attach "Read More link after bible verse output"
-                var readMoreLink = "https://biblia.com/books/nasb95/" + verse.replace(/\s/g, ' ');
-                var linkDiv = $("<a></a>").text("Read More").attr("href", readMoreLink).attr("target", "new");
-                // only show the first 200 characters of response
-                response = (`${response.substring(0, 200)}...`);
-                $("#answer-3").html(`${verse} : ${response}`).append(linkDiv);
-                }),
+                // Load var with info from response
+                bibleVerse = (`${verse} : ${response.substring(0, 200)}...`);
+            }),
             //Don't display on error
             error: (function(){
-                $("#answer-3").html(`${verse}`);
+                // Load blank if error
+                bibleVerse = "";
             })
         })
     },
     
+    // METHOD to end the game and show results
     endGame: function() {
         BibleTrivia.clearDivs();
         $("#time").text("As Jesus once said...");
@@ -178,6 +200,7 @@ var BibleTrivia = {
         });
     },
 
+    // METHOD to start game (auto-called onload)
     startGame: function () {
         $("#time").text("Welcome to Bible Trivia!");
         $("#question").html("To get started, click the 'Start' button below...");
@@ -189,5 +212,6 @@ var BibleTrivia = {
 
 };
 
+// START GAME
 $(document).ready(BibleTrivia.startGame());
 

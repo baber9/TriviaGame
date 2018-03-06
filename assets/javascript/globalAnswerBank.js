@@ -136,7 +136,7 @@ var globalAnswerBank = [
         id: 14,		
         title: 'What was inscribed above Jesus\' cross?',		
         answer: 'This is Jesus, King of the Jews',		
-        reference: '(Mark 15:26; Matt 27:27)',
+        reference: '(Matt 27:37)',
         choices: [
             'Christ crucified',
             'Blasphemer',
@@ -446,7 +446,7 @@ var globalAnswerBank = [
         id: 45,		
         title: 'The Lord is my Shepherd, is the opening line to which Psalm?',		
         answer: 'Psalm 23',		
-        reference: '(Psalms)',
+        reference: '(Psalm 23:1)',
         choices: [
             'Psalm 19',
             'Psalm 119',
@@ -466,7 +466,7 @@ var globalAnswerBank = [
         id: 47,		
         title: 'Who wrote the majority of the New Testament letters?',		
         answer: 'Paul',		
-        reference: '(Rom 1:1 - Jude 1:25)',
+        reference: '(Bible)',
         choices: [
             'Matthew',
             'John',
@@ -836,7 +836,7 @@ var globalAnswerBank = [
         id: 84,		
         title: 'What was Esau doing while Jacob stole his blessing?',		
         answer: 'Hunting',		
-        reference: '(Gen 27:1-3,23)',
+        reference: '(Gen 27:1-3)',
         choices: [
             'Fighting',
             'Sleeping',
@@ -1126,7 +1126,7 @@ var globalAnswerBank = [
         id: 113,		
         title: 'Which well known Psalm of David contains the line, "he maketh me to lie down in green pastures"?',		
         answer: 'Psalm 23',		
-        reference: '(Psalms)',
+        reference: '(Psalm 23:1)',
         choices: [
             'Psalm 150',
             'Psalm 119',
@@ -1346,7 +1346,7 @@ var globalAnswerBank = [
         id: 135,		
         title: 'When the law was given to the children of Israel, what were they told not to worship?',		
         answer: 'Other gods',		
-        reference: '(Exo 34:14; Deut 8:19)',
+        reference: '(Exo 34:14)',
         choices: [
             'God Himself',
             'Holy Spirit',
@@ -1386,7 +1386,7 @@ var globalAnswerBank = [
         id: 139,		
         title: 'Which king dreamed about a large statue of a man made from different metals?',		
         answer: 'Nebuchadnezzar',		
-        reference: '(Dan 2)',
+        reference: '(Dan 2:1)',
         choices: [
             'Solomon',
             'Pharoh',
@@ -1486,7 +1486,7 @@ var globalAnswerBank = [
         id: 149,		
         title: 'Which is the longest Psalm?',		
         answer: 'Psalm 119',		
-        reference: '(Psalms)',
+        reference: '(Psalm 119:1)',
         choices: [
             'Psalm 150',
             'Psalm 23',
